@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+}
+
+#canvas1 {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+}
+
+#button1 {
+    margin-bottom: 2em;
+    z-index: 100;
+}
