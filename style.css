@@ -11,13 +11,29 @@ body {
     align-items: center;
 }
 
-#canvas1 {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
+img {
+    display: none;
 }
 
-#button1 {
-    margin-bottom: 2em;
+#canvas1 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}
+
+
+button {
+    margin-bottom: 2rem;
     z-index: 100;
+    background-color: red;
+    padding: 1rem;
+    border: none;
+    border-radius: 1rem;
+    font-size: 2rem;
+    color: white;
+}
+
+button:hover {
+    background-color: rgb(255, 97, 97);
 }
