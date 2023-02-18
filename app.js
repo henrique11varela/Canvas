@@ -3,27 +3,43 @@ window.addEventListener('load', () => {
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    
+
     const image1 = document.getElementById("image1");
 
     class Particle {
-        constructor(x, y, size, color) {
+        constructor(x, y, size, color, effect) {
+            this.effect = effect;
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
             this.origin = [Math.floor(x), Math.floor(y)]
             this.size = size;
             this.color = color;
             this.velocity = [0.1, 0.1];
+            this.ease = 0.05;
+            this.dx = 0;
+            this.dy = 0;
+            this.distance = 0;
+            this.force = 0;
+            this.angle = 0;
         }
         draw(context) {
             context.fillStyle = this.color;
             context.fillRect(this.x, this.y, this.size, this.size);
         }
         update() {
-            this.x += (this.origin[0] - this.x) * this.velocity[0];
-            this.y += (this.origin[1] - this.y) * this.velocity[1];
+            this.dx = this.effect.mouse.x - this.x;
+            this.dy = this.effect.mouse.y - this.y;
+            this.distance = this.dx * this.dx + this.dy * this.dy;
+            this.force = -this.effect.mouse.radius / this.distance;
+            if (this.effect.mouse.radius > this.distance) {
+                this.angle = Math.atan2(this.dy, this.dx);
+                this.velocity[0] = this.force * Math.cos(this.angle);
+                this.velocity[1] = this.force * Math.sin(this.angle);
+            }
+            this.x += (this.origin[0] - this.x) * this.ease + (this.velocity[0] *= 0.95);
+            this.y += (this.origin[1] - this.y) * this.ease + (this.velocity[1] *= 0.95);
         }
-        warp(){
+        warp() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
         }
@@ -44,7 +60,6 @@ window.addEventListener('load', () => {
             window.addEventListener('mousemove', (event) => {
                 this.mouse.x = event.x;
                 this.mouse.y = event.y;
-                console.log(this.mouse.x, this.mouse.y);
             });
         }
         init(context) {
@@ -59,8 +74,8 @@ window.addEventListener('load', () => {
                     const alpha = pixels[index + 3];
                     const color = 'rgb(' + red + ',' + green + ',' + blue + ',' + alpha + ')'
                     if (alpha > 0) {
-                        this.addParticle(x, y, this.gap, color);
-                    }
+                        this.addParticle(x, y, this.gap, color, this);
+                    }           
                 }
             }
         }
@@ -74,8 +89,8 @@ window.addEventListener('load', () => {
                 element.update();
             });
         }
-        addParticle(x, y, size, color) {
-            this.particlesArray.push(new Particle(x, y, size, color));
+        addParticle(x, y, size, color, effect) {
+            this.particlesArray.push(new Particle(x, y, size, color, this));
         }
         warp() {
             this.particlesArray.forEach(element => {
